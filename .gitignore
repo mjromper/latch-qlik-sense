@@ -1,0 +1,4 @@
+node_modules
+*.pem
+*.db
+public/bower_components
