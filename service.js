@@ -7,6 +7,7 @@ var express = require('express'),
     port = 3000,
     latch = require('./latch.js');
 var url = require('url');
+var config = require('./config');
 
 var Datastore = require('nedb');
 var db = {};
@@ -19,15 +20,14 @@ app.use(bodyParser.json());
 app.use(express.static( path.resolve(__dirname, './public')));
 
 app.get('/authenticate', function ( req, res ) {
-    //Init sense auth module
-    var hostUrl = req.protocol+"://"+req.get('host');
-
     //Store targetId and proxyRestUri in a global object
     if (url.parse(req.url, true).query.targetId != undefined) {
         global.qlikAuthSession = {
             "targetId": url.parse(req.url, true).query.targetId,
             "proxyRestUri": url.parse(req.url, true).query.proxyRestUri
         };
+    } else {
+        global.qlikAuthSession = null;
     }
     res.redirect("/#/login");
 });
@@ -39,17 +39,19 @@ app.get('/login', function ( req, res ) {
 
 app.post('/auth', function ( req, res ) {
 
-    var hostUrl = req.protocol+"://"+req.get('host'),
-        username = req.body.username;
+    var username = req.body.username;
 
     db['latchacc'].findOne( { "username": username } , function(err, result) {
+
+        var targetId = global.qlikAuthSession? global.qlikAuthSession.targetId : null;
+
         if ( !result ) {
-            getTicket(res, username, global.qlikAuthSession.targetId, null, []);
+            getTicket(res, username, targetId, null, []);
         } else {
             latch.status(result.accountId, function( err, operations ) {
 
                 if (err && err.message === "Account not paired" ) {
-                    getTicket(res, username, global.qlikAuthSession.targetId, null, []);
+                    getTicket(res, username, targetId, null, []);
                     return;
                 }
 
@@ -63,7 +65,7 @@ app.post('/auth', function ( req, res ) {
                     isAllOn = isAllOn && (operations[op].status === 'on');
                 }
                 if ( isAllOn ) {
-                    getTicket(res, username, global.qlikAuthSession.targetId,isAllOn, operations);
+                    getTicket(res, username, targetId,isAllOn, operations);
                 } else {
                     res.json( { "username": username, "latch": isAllOn } );
                 }
@@ -76,8 +78,15 @@ app.post('/auth', function ( req, res ) {
 
 function getTicket( res, username, targetId, latch, operations ) {
     ticket( username, targetId, operations ).then( function( response ) {
-        var ticket = JSON.parse(response).Ticket;
-        var targetUri = JSON.parse(response).TargetUri;
+        var resObj = JSON.parse(response);
+        var ticket = resObj.Ticket;
+        var targetUri;
+        if ( resObj.TargetUri ) {
+            targetUri = resObj.TargetUri;
+        } else {
+            targetUri = (config.isSecure? 'https://' : 'http://') + config.senseHost +"/"+config.prefix+"/hub";
+            console.log("goes here", targetUri);
+        }
         res.json( {"ticket": ticket, targetUri: targetUri, "username": username,"latch": latch } );
     }, function(err){
         res.status(403).send(err);

@@ -22,7 +22,7 @@ angular.module('sessApp').factory('AuthService', [ '$rootScope', '$http', '$cook
 		return $http.post('/auth', user ).then( function(res) {
 			setLoginUser(res.data);
 			if ( loginUser.latch === true ) {
-				$window.location.href = "https://ukwin-aor-w10/latch/hub?qlikTicket="+loginUser.ticket;
+				$window.location.href = loginUser.targetUri+"?qlikTicket="+loginUser.ticket;
 			} else {
 				$state.go('dashboard');
 			}

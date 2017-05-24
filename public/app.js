@@ -35,8 +35,9 @@ angular.module('sessApp', ['ui.router', 'ngCookies', 'cgBusy', 'ngResource'])
     });
 
     $rootScope.logout = function() {
+        var user = AuthService.getLoginUser();
         AuthService.setLoginUser(null);
-        $window.location.href = "https://ukwin-aor-w10/latch/hub";
+        $window.location.href = user.targetUri;
     };
 
 }]);
