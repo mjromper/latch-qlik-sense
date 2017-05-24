@@ -2,19 +2,20 @@ var express = require('express'),
     app = express(),
     fs = require('fs'),
     path = require('path'),
-    http = require("http"),
-    ticket = require('./ticket'),
+    http = require('http'),
+    url = require('url'),
+    bodyParser = require('body-parser'),
+    Datastore = require('nedb'),
     port = 3000,
-    latch = require('./latch.js');
-var url = require('url');
-var config = require('./config');
+    ticket = require('./ticket'),
+    latch = require('./latch.js'),
+    config = require('./config');
 
-var Datastore = require('nedb');
 var db = {};
 db.latchacc = new Datastore( path.resolve(__dirname,'comments.db') );
 db.latchacc.loadDatabase();
 
-var bodyParser = require('body-parser');
+var defaulTargetUri = (config.isSecure? 'https://' : 'http://') + config.senseHost +"/"+config.prefix+"/hub";
 
 app.use(bodyParser.json());
 app.use(express.static( path.resolve(__dirname, './public')));
@@ -56,7 +57,8 @@ app.post('/auth', function ( req, res ) {
                 }
 
                 if ( err ) {
-                    res.json( {"error": err, "username": username,"latch": null } );
+                    var defaultTargetUri
+                    res.json( {"error": err, "username": username,"latch": null, "targetUri": defaulTargetUri } );
                     return;
                 }
 
@@ -67,7 +69,7 @@ app.post('/auth', function ( req, res ) {
                 if ( isAllOn ) {
                     getTicket(res, username, targetId,isAllOn, operations);
                 } else {
-                    res.json( { "username": username, "latch": isAllOn } );
+                    res.json( { "username": username, "latch": isAllOn, "targetUri": defaulTargetUri } );
                 }
             });
 
@@ -78,16 +80,11 @@ app.post('/auth', function ( req, res ) {
 
 function getTicket( res, username, targetId, latch, operations ) {
     ticket( username, targetId, operations ).then( function( response ) {
-        var resObj = JSON.parse(response);
-        var ticket = resObj.Ticket;
-        var targetUri;
-        if ( resObj.TargetUri ) {
-            targetUri = resObj.TargetUri;
-        } else {
-            targetUri = (config.isSecure? 'https://' : 'http://') + config.senseHost +"/"+config.prefix+"/hub";
-            console.log("goes here", targetUri);
-        }
-        res.json( {"ticket": ticket, targetUri: targetUri, "username": username,"latch": latch } );
+        var resObj = JSON.parse(response),
+            ticket = resObj.Ticket,
+            targetUri = resObj.TargetUri? resObj.TargetUri : defaulTargetUri;
+
+        res.json( {"ticket": ticket, "targetUri": targetUri, "username": username,"latch": latch } );
     }, function(err){
         res.status(403).send(err);
     });
@@ -118,8 +115,6 @@ app.get('/unpair/:user', function( req, res ) {
             res.status(404).json({success: false});
             return;
         }
-
-        console.log("result", result);
         latch.unpair(result.accountId, function(err, data){
             if ( err ) {
                 res.status(400).json({success: false, "error":err});
