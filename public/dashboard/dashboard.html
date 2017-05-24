@@ -1,0 +1,32 @@
+<h1>Hello {{user.username}}</h1>
+<hr/>
+<div ng-if="user.latch === null">
+    <div ng-if="!paired">
+        <div >
+            <h3>Your account to authenticate in Qlik Sense is not protected</h3>
+            <h4>Use <img src="img/1.png" width="35px"> to secure your access while you are away.</h4>
+            <p><br>Download Latch app from Apple Store or Google Play and follow instructions</p>
+
+            <div class="form-inline" class="text-left">
+                <div class="form-group">
+                    <label class="sr-only" for="exampleInputEmail3">Latch Code</label>
+                    <input type="text" ng-model="latch.code" class="form-control" id="exampleInputEmail3" placeholder="Enter Code to pair">
+                </div>
+                <button type="button"  ng-click="pair()" class="btn btn-default" style="background-color: #00b9be; color: #fff;">Pair with Latch <i class="fa fa-link"></i></button>
+            </div>
+
+        </div>
+        <hr style="border-top: 1px solid #00b9be;" />
+        <h3>I don't want to protect my account <a ng-href="{{user.targetUri}}?qlikTicket={{user.ticket}}"  ng-click="pair();" class="btn btn-default">Continue to Qlik Sense</a></h3>
+    </div>
+    <div ng-if="paired">
+        <h3>Nice! Your are now protected with Latch.</h3>
+        <p>Use Latch App to lock or unlock access to Qlik Sense</p>
+        <a ng-href="{{user.targetUri}}?qlikTicket={{user.ticket}}"  ng-click="pair();" class="btn btn-default">Continue to Qlik Sense</a>
+    </div>
+</div>
+<div class="text-center" ng-if="user.latch === false">
+    <h3>Your access to Qlik Sense is locked with Latch</h3>
+    <p>Login to your Latch App and unlock it to continue</p>
+    <img src="img/latch.png" width="400px" >
+</div>
