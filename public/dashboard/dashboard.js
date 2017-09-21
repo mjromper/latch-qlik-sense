@@ -1,5 +1,5 @@
-angular.module('sessApp').controller('DashboardCtrl', ['$scope', '$state', 'AuthService', 'LatchResource',
-	function($scope, $state, AuthService, LatchResource) {
+angular.module('sessApp').controller('DashboardCtrl', ['$scope', '$rootScope', '$state', 'AuthService', 'LatchResource', 'LatchUnpairResource',
+	function($scope, $rootScope, $state, AuthService, LatchResource, LatchUnpairResource) {
 
 	$scope.user = AuthService.getLoginUser();
 	$scope.isUserLatchLocked = $scope.user.latch === false;
@@ -14,6 +14,18 @@ angular.module('sessApp').controller('DashboardCtrl', ['$scope', '$state', 'Auth
           	$scope.paired = true;
      	}, function(err) {
      		console.log("err pairing", err);
+     	});
+	};
+	
+	$scope.retry = function() {
+		AuthService.login($scope.user);
+	};
+	
+	$scope.unpair = function() {
+		LatchUnpairResource.unpair({user: $scope.user.username}, function (res) {
+          	$rootScope.logout();
+     	}, function(err) {
+     		console.log("err unpairing", err);
      	});
 	};
 }]);

@@ -44,7 +44,7 @@ angular.module('sessApp').controller('LoginCtrl', ['$scope', 'AuthService',
 	$scope.user = {
 		dir: 'LATCH'
 	};
-	$scope.someUsers = ['20036919', '50013849', '50295945', '20128051', '20078041', '50310518', '50156338', '50025944'];
+	$scope.someUsers = ['alberto', 'manuel', 'felipe', 'rodrigo', 'juanma', 'asier', 'felix', 'robert'];
 
 	$scope.doLogin = function(){
 		$scope.loginProm = AuthService.login($scope.user);
