@@ -40,6 +40,7 @@ db.latchacc.loadDatabase();
 
 //Init latch configuration
 latch.init(config.latch);
+ticket.init(config);
 
 var defaulTargetUri = (config.isSecure? 'https://' : 'http://') + config.senseHost +"/"+config.prefix+"/hub";
 
@@ -105,12 +106,12 @@ app.post('/auth', function ( req, res ) {
 });
 
 function getTicket( res, username, targetId, latch, operations ) {
-    ticket( username, targetId, operations ).then( function( response ) {
+    ticket.getNewTicket( username, targetId, operations ).then( function( response ) {
         var resObj = JSON.parse(response),
-            ticket = resObj.Ticket,
+            ticketToken = resObj.Ticket,
             targetUri = resObj.TargetUri? resObj.TargetUri : defaulTargetUri;
 
-        res.json( {"ticket": ticket, "targetUri": targetUri, "username": username,"latch": latch } );
+        res.json( {"ticket": ticketToken, "targetUri": targetUri, "username": username,"latch": latch } );
     }, function(err){
         res.status(403).send(err);
     });
