@@ -2,7 +2,11 @@ var fs = require('fs');
 var request = require('request-promise');
 var config = require('./config');
 
-module.exports = function( user, targetId, operations ) {
+function init(conf) {
+    config = conf;
+}
+
+function getNewTicket( user, targetId, operations ) {
 
     var attributes = [];
 
@@ -31,3 +35,5 @@ module.exports = function( user, targetId, operations ) {
         body: JSON.stringify(ticketRequest)
     });
 };
+
+exports.getNewTicket = getNewTicket;
