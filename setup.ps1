@@ -39,7 +39,7 @@ $moduleName="latch-qlik-sense"
         Write-Host "Extracting Latch modules..."
         Invoke-WebRequest "https://github.com/mjromper/$moduleName/archive/master.zip" -OutFile "$temp\$moduleName-master.zip"
         Expand-Archive -LiteralPath $temp\$moduleName-master.zip -DestinationPath $temp -Force
-        Copy-Item $temp\$moduleName-master\* $target -Force
+        Copy-Item $temp\$moduleName-master\* $target -Force -Recurse
     # }
 
     # check if npm has been unzipped already
