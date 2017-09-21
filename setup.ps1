@@ -18,9 +18,10 @@ $temp="c:\TempLatch\LatchAuthSetup-yFH4gu"
 $npm="npm-1.4.9.zip"
 $config="c:\Program Files\Qlik\Sense\ServiceDispatcher"
 $target="$config\Node\Latch-Auth"
+$moduleName="latch-qlik-sense"
 
 # check if module is installed
-if(!(Test-Path -Path "$target\node_modules")) {
+# if(!(Test-Path -Path "$target\node_modules")) {
 
     $confirm = Read-Host "This script will install the Latch Auth module for Qlik Sense, do you want to proceed? [Y/n]"
     if ($confirm -eq 'n') {
@@ -28,16 +29,18 @@ if(!(Test-Path -Path "$target\node_modules")) {
     }
 
     # check if npm has been downloaded already
-	if(!(Test-Path -Path "$temp\$npm")) {
+    if(!(Test-Path -Path "$temp\$npm")) {
         New-Item -Path "$temp" -Type directory -force | Out-Null
-		Invoke-WebRequest "http://nodejs.org/dist/npm/$npm" -OutFile "$temp\$npm"
-	}
+        Invoke-WebRequest "http://nodejs.org/dist/npm/$npm" -OutFile "$temp\$npm"
+    }
 
     # check if module has been downloaded
-    if(!(Test-Path -Path "$target")) {
-        Invoke-WebRequest "https://github.com/mjromper/latch-qlik-sense/archive/master.zip" -OutFile "$temp\latch-qlik-sense-master.zip"
-        Expand-Archive -LiteralPath $temp\latch-qlik-sense-master.zip -DestinationPath $target -Force
-    }
+    # if(!(Test-Path -Path "$target")) {
+        Write-Host "Extracting Latch modules..."
+        Invoke-WebRequest "https://github.com/mjromper/$moduleName/archive/master.zip" -OutFile "$temp\$moduleName-master.zip"
+        Expand-Archive -LiteralPath $temp\$moduleName-master.zip -DestinationPath $temp -Force
+        Copy-Item $temp\$moduleName-master\* $target -Force
+    # }
 
     # check if npm has been unzipped already
     if(!(Test-Path -Path "$temp\node_modules")) {
@@ -47,41 +50,42 @@ if(!(Test-Path -Path "$target\node_modules")) {
     }
 
     # install module with dependencies
-	Write-Host "Installing modules..."
+    Write-Host "Installing modules..."
     Push-Location "$target"
     $env:Path=$env:Path + ";$config\Node"
-	&$temp\npm.cmd config set spin=false
-	&$temp\npm.cmd --prefix "$target" install
+    &$temp\npm.cmd config set spin=false
+    &$temp\npm.cmd --prefix "$target" install
     Pop-Location
 
     # cleanup temporary data
     Write-Host $nl"Removing temporary files..."
     Remove-Item $temp -recurse
-}
+#}
 
 function Read-Default($text, $defaultValue) { $prompt = Read-Host "$($text) [$($defaultValue)]"; return ($defaultValue,$prompt)[[bool]$prompt]; }
 
 # check if config has been added already
 if (!(Select-String -path "$config\services.conf" -pattern "Identity=aor-latch-auth" -quiet)) {
 
-	$settings = @"
+    $settings = @"
 
 
 [latch-auth]
-Identity=aor-o365-auth
+Identity=aor-latch-auth
 Enabled=true
-DisplayName=Office365 Auth
+DisplayName=Latch Auth
 ExecType=nodejs
 ExePath=Node\node.exe
-Script=Node\office365-auth\service.js
+Script=Node\latch-auth\service.js
 
 [latch-auth.parameters]
 user_directory=
 auth_port=
+is_secure=
 client_id=
 client_secret=
 "@
-	Add-Content "$config\services.conf" $settings
+    Add-Content "$config\services.conf" $settings
 }
 
 # configure module
@@ -90,6 +94,7 @@ Write-Host $nl"To make changes to the configuration in the future just re-run th
 
 $user_directory=Read-Default $nl"Enter name of user directory" "LATCH"
 $auth_port=Read-Default $nl"Enter port" "4000"
+$is_secure=Read-Default $nl"Use secure connection? [Y/N]" "N"
 $client_id=Read-Default $nl"Application ID" $client_id
 $client_secret=Read-Default $nl"Client Secret" $client_secret
 
@@ -108,7 +113,15 @@ function Set-Config( $file, $key, $value )
 Write-Host $nl"Updating configuration..."
 Set-Config -file "$config\services.conf" -key "user_directory" -value $user_directory
 Set-Config -file "$config\services.conf" -key "auth_port" -value $auth_port
+Set-Config -file "$config\services.conf" -key "is_secure" -value $is_secure
 Set-Config -file "$config\services.conf" -key "client_id" -value $client_id
 Set-Config -file "$config\services.conf" -key "client_secret" -value $client_secret
 
-Write-Host $nl"Done! Please restart the 'Qlik Sense Service Dispatcher' service for changes to take affect."$nl
+
+# Restart ServiceDipatcher
+Write-Host $nl"Restarting ServiceDispatcher.."
+net stop QlikSenseServiceDispatcher
+start-sleep 5
+net start QlikSenseServiceDispatcher
+Write-Host $nl"Done! 'Qlik Sense Service Dispatcher' restarted."$nl
+Write-Host $nl"Done! Latch Auth module installed."$nl
