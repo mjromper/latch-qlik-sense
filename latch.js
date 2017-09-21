@@ -1,7 +1,8 @@
 var latch = require('latch-sdk');
-var config = require('./config');
 
-latch.init(config.latch);
+function init(config) {
+    latch.init(config);
+}
 
 function status( accountId, cb ) {
     var statusResponse = latch.status(accountId, function(err, res){
@@ -38,6 +39,7 @@ function unpair( accountId, cb ) {
     var pairResponse = latch.unpair( accountId, cb);
 }
 
+exports.init = init;
 exports.pair = pair;
 exports.unpair = unpair;
 exports.status = status;

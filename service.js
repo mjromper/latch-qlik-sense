@@ -10,9 +10,36 @@ var express = require('express'),
     latch = require('./latch.js'),
     config = require('./config');
 
+// Updateing configuration from parameters
+var arg = process.argv.slice(2);
+arg.forEach( function(a) {
+    var key = a.split("=");
+    switch( key[0] ) {
+      case "user_directory":
+        config.prefix = key[1];
+        break;
+      case "is_secure":
+        config.isSecure = (key[1] === "y" || key[1] === "Y")? true : false;
+        break;
+      case "client_id":
+        config.latch.appId = key[1];
+        break;
+      case "client_secret":
+        config.latch.secretKey = key[1];
+        break;
+      case "auth_port":
+        config.port = key[1];
+        break;
+  }
+} );
+
+
 var db = {};
 db.latchacc = new Datastore( path.resolve(__dirname,'comments.db') );
 db.latchacc.loadDatabase();
+
+//Init latch configuration
+latch.init(config.latch);
 
 var defaulTargetUri = (config.isSecure? 'https://' : 'http://') + config.senseHost +"/"+config.prefix+"/hub";
 
