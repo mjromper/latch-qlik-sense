@@ -6,7 +6,6 @@ var express = require('express'),
     url = require('url'),
     bodyParser = require('body-parser'),
     Datastore = require('nedb'),
-    port = 3000,
     ticket = require('./ticket'),
     latch = require('./latch.js'),
     config = require('./config');
@@ -128,4 +127,4 @@ app.get('/unpair/:user', function( req, res ) {
 
 //Server application
 var server = http.createServer( app );
-server.listen( port );
+server.listen( config.port );

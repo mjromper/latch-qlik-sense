@@ -1,5 +1,5 @@
 var path = require('path');
-var certPath = './certs';
+var certPath = 'C:/ProgramData/Qlik/Sense/Repository/Exported Certificates/.Local Certificates';
 
 var config = {
 
@@ -13,12 +13,14 @@ var config = {
         server_key: path.resolve(certPath, 'server_key.pem')
     },
 
+    port: 4000,
+
     /**
      * Sense Server config
      */
-    senseHost: 'ukwin-aor-w10',
+    senseHost: 'qmi-qs-latch',
     prefix: 'latch',
-    isSecure: true,
+    isSecure: false,
     cookieName: 'X-Qlik-Session-Latch', // Cookie name assigned for virtual proxy
 
     latch: {
