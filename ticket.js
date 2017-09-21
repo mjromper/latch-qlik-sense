@@ -36,4 +36,5 @@ function getNewTicket( user, targetId, operations ) {
     });
 };
 
+exports.init = init;
 exports.getNewTicket = getNewTicket;
