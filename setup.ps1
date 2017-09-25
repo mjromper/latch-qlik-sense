@@ -37,6 +37,7 @@ $moduleName="latch-qlik-sense"
     # check if module has been downloaded
     # if(!(Test-Path -Path "$target")) {
         New-Item -Path "$target" -Type directory -force | Out-Null
+        New-Item -Path "$temp" -Type directory -force | Out-Null
         Write-Host "Extracting Latch modules..."
         Invoke-WebRequest "https://github.com/mjromper/$moduleName/archive/master.zip" -OutFile "$temp\$moduleName-master.zip"
         Expand-Archive -LiteralPath $temp\$moduleName-master.zip -DestinationPath $temp -Force
@@ -60,7 +61,7 @@ $moduleName="latch-qlik-sense"
 
     # cleanup temporary data
     Write-Host $nl"Removing temporary files..."
-    # Remove-Item $temp -recurse
+    Remove-Item $temp -recurse
 #}
 
 function Read-Default($text, $defaultValue) { $prompt = Read-Host "$($text) [$($defaultValue)]"; return ($defaultValue,$prompt)[[bool]$prompt]; }
