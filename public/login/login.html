@@ -7,9 +7,13 @@
 		        <label for="userid">Username</label>
 		        <input ng-model="user.username" name="userid" type="text" id="userid" class="form-control" placeholder="Enter username" required="" autofocus="">
 		        <br />
+                <label for="pass">Password</label>
+                <input type="password" readonly  name="pass" id="pass" class="form-control" placeholder="Enter password" required="">
+                <br />
+                <!--
 		        <label for="directory">Directory</label>
 		        <input ng-model="user.dir" type="text" readonly  name="directory" id="directory" class="form-control" placeholder="Enter group" required="">
-		        <br />
+		        <br />-->
 		        <button ng-click="doLogin();" class="btn btn-lg btn-primary btn-block" type="button">Login <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
 		        <div cg-busy="{promise:loginProm,message:'Wait...'}"></div>
 		    </div>
