@@ -20,6 +20,7 @@ $config="c:\Program Files\Qlik\Sense\ServiceDispatcher"
 $target="$config\Node\Latch-Auth"
 $moduleName="latch-qlik-sense"
 
+
 # check if module is installed
 # if(!(Test-Path -Path "$target\node_modules")) {
 
@@ -34,10 +35,18 @@ $moduleName="latch-qlik-sense"
         Invoke-WebRequest "http://nodejs.org/dist/npm/$npm" -OutFile "$temp\$npm"
     }
 
+    New-Item -Path "$target" -Type directory -force | Out-Null
+    New-Item -Path "$temp" -Type directory -force | Out-Null
+
+    # Installing Qlik-CLI
+    Write-Host "Downloading Qlik-Cli from Github and importing the Module"
+    Invoke-WebRequest "https://raw.githubusercontent.com/ahaydon/Qlik-Cli/master/Qlik-Cli.psm1" -OutFile $temp\Qlik-Cli.psm1
+    New-Item -ItemType directory -Path C:\Windows\System32\WindowsPowerShell\v1.0\Modules\Qlik-Cli -force
+    Move-Item $temp\Qlik-Cli.psm1 C:\Windows\System32\WindowsPowerShell\v1.0\Modules\Qlik-Cli\ -force
+    Import-Module Qlik-Cli.psm1
+
     # check if module has been downloaded
     # if(!(Test-Path -Path "$target")) {
-        New-Item -Path "$target" -Type directory -force | Out-Null
-        New-Item -Path "$temp" -Type directory -force | Out-Null
         Write-Host "Extracting Latch modules..."
         Invoke-WebRequest "https://github.com/mjromper/$moduleName/archive/master.zip" -OutFile "$temp\$moduleName-master.zip"
         Expand-Archive -LiteralPath $temp\$moduleName-master.zip -DestinationPath $temp -Force
@@ -63,6 +72,7 @@ $moduleName="latch-qlik-sense"
     Write-Host $nl"Removing temporary files..."
     Remove-Item $temp -recurse
 #}
+
 
 function Read-Default($text, $defaultValue) { $prompt = Read-Host "$($text) [$($defaultValue)]"; return ($defaultValue,$prompt)[[bool]$prompt]; }
 
@@ -121,6 +131,16 @@ Set-Config -file "$config\services.conf" -key "auth_port" -value $auth_port
 Set-Config -file "$config\services.conf" -key "is_secure" -value $is_secure
 Set-Config -file "$config\services.conf" -key "client_id" -value $client_id
 Set-Config -file "$config\services.conf" -key "client_secret" -value $client_secret
+
+$confirm = Read-Host "Create Latch virtual proxy in Qlik Sense? [Y/n]"
+if ($confirm -ne 'n') {
+    # Adding virtual proxy
+    Write-Host "Creating Google Virtual Proxy"
+    New-QlikVirtualProxy -prefix latch -description latch -authUri http://$($qlik_sense_hostname):4000/authenticate -sessionCookieHeaderName X-Qlik-Session-Latch -loadBalancingServerNodes $(Get-QlikNode).id -websocketCrossOriginWhiteList $($qlik_sense_hostname)
+    # Update-QlikVirtualProxy -id $(Get-QlikVirtualProxy -filter "description eq 'google'").id -anonymousAccessMode 0
+    Add-QlikProxy -ProxyId $(Get-QlikProxy).id -VirtualProxyId $(Get-QlikVirtualProxy -filter "description eq 'latch'").id
+}
+
 
 
 # Restart ServiceDipatcher
