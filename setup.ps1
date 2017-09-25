@@ -36,6 +36,7 @@ $moduleName="latch-qlik-sense"
 
     # check if module has been downloaded
     # if(!(Test-Path -Path "$target")) {
+        New-Item -Path "$target" -Type directory -force | Out-Null
         Write-Host "Extracting Latch modules..."
         Invoke-WebRequest "https://github.com/mjromper/$moduleName/archive/master.zip" -OutFile "$temp\$moduleName-master.zip"
         Expand-Archive -LiteralPath $temp\$moduleName-master.zip -DestinationPath $temp -Force
@@ -59,7 +60,7 @@ $moduleName="latch-qlik-sense"
 
     # cleanup temporary data
     Write-Host $nl"Removing temporary files..."
-    Remove-Item $temp -recurse
+    # Remove-Item $temp -recurse
 #}
 
 function Read-Default($text, $defaultValue) { $prompt = Read-Host "$($text) [$($defaultValue)]"; return ($defaultValue,$prompt)[[bool]$prompt]; }
@@ -80,6 +81,7 @@ Script=Node\latch-auth\service.js
 
 [latch-auth.parameters]
 user_directory=
+qlik_sense_hostname=
 auth_port=
 is_secure=
 client_id=
@@ -93,6 +95,7 @@ Write-Host $nl"CONFIGURE MODULE"
 Write-Host $nl"To make changes to the configuration in the future just re-run this script."
 
 $user_directory=Read-Default $nl"Enter name of user directory" "LATCH"
+$qlik_sense_hostname=Read-Default $nl"Enter QS hostname" $qlik_sense_hostname
 $auth_port=Read-Default $nl"Enter port" "4000"
 $is_secure=Read-Default $nl"Use secure connection? [Y/N]" "N"
 $client_id=Read-Default $nl"Application ID" $client_id
@@ -112,6 +115,7 @@ function Set-Config( $file, $key, $value )
 # write changes to configuration file
 Write-Host $nl"Updating configuration..."
 Set-Config -file "$config\services.conf" -key "user_directory" -value $user_directory
+Set-Config -file "$config\services.conf" -key "qlik_sense_hostname" -value $qlik_sense_hostname
 Set-Config -file "$config\services.conf" -key "auth_port" -value $auth_port
 Set-Config -file "$config\services.conf" -key "is_secure" -value $is_secure
 Set-Config -file "$config\services.conf" -key "client_id" -value $client_id

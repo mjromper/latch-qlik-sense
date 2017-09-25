@@ -21,6 +21,9 @@ arg.forEach( function(a) {
       case "is_secure":
         config.isSecure = (key[1] === "y" || key[1] === "Y")? true : false;
         break;
+      case "qlik_sense_hostname":
+        config.senseHost = key[1];
+        break;
       case "client_id":
         config.latch.appId = key[1];
         break;
