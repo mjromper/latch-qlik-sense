@@ -29,9 +29,33 @@ Edit **config.js** setting Sense Server hostname, virtual proxy and **Latch** cr
 npm start
 ```
 
-## Certificates
+### Installation of this module within Qlik Sense ServiceDispatcher
 
-Export certificates using QMC and copy **client.pem** and **client_key.pem** into **/certs** folder
+* Launch PowerShell in Administrator mode (right-click and select Run As Administrator)
+* Create and change directory to an empty directory, i.e. C:\TempO365
+
+```powershell
+    mkdir \TempLatch; cd \TempLatch
+```
+
+* Enter the below command exactly as it is (including parentheses):
+
+```powershell
+    (Invoke-WebRequest "https://raw.githubusercontent.com/mjromper/latch-qlik-sense/master/setup.ps1" -OutFile setup.ps1) | .\setup.ps1
+```
+
+This will download and execute the setup script.
+
+When the downloading and installation of the modules including their dependencies are finished you will be prompted for some configuration options.
+
+```
+Enter name of user directory [LATCH]:
+Enter port [4000]:
+Use secure connection? [Y/N]:
+Application ID []: enter your Latch **client_id** value
+Client Secret []: enter your Latch **client_secret** value
+```
+
 
 ## Setup a virtual proxy
 
