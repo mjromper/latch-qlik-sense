@@ -137,6 +137,7 @@ $VPId=$(Get-QlikVirtualProxy -filter "description eq '$user_directory'")
 if ( !$VPId) {
     Write-Host "Creating Virtual Proxy"
     New-QlikVirtualProxy -prefix $($user_directory) -description $($user_directory) -authUri http://$($qlik_sense_hostname):$($auth_port)/authenticate -sessionCookieHeaderName X-Qlik-Session-$($user_directory) -loadBalancingServerNodes $(Get-QlikNode).id -websocketCrossOriginWhiteList $($qlik_sense_hostname)
+    $VPId=$(Get-QlikVirtualProxy -filter "description eq '$user_directory'")
 }else{
     Write-Host "Updating Virtual proxy"
     Update-QlikVirtualProxy -id $VPId.id -description $($user_directory) -authUri http://$($qlik_sense_hostname):$($auth_port)/authenticate -sessionCookieHeaderName X-Qlik-Session-$($user_directory) -loadBalancingServerNodes $(Get-QlikNode).id -websocketCrossOriginWhiteList $($qlik_sense_hostname)
