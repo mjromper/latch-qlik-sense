@@ -136,9 +136,9 @@ $confirm = Read-Host "Create Latch virtual proxy in Qlik Sense? [Y/n]"
 if ($confirm -ne 'n') {
     # Adding virtual proxy
     Write-Host "Creating Google Virtual Proxy"
-    New-QlikVirtualProxy -prefix latch -description latch -authUri http://$($qlik_sense_hostname):$($auth_port)/authenticate -sessionCookieHeaderName X-Qlik-Session-Latch -loadBalancingServerNodes $(Get-QlikNode).id -websocketCrossOriginWhiteList $($qlik_sense_hostname)
+    New-QlikVirtualProxy -prefix $user_directory -description $user_directory -authUri http://$($qlik_sense_hostname):$($auth_port)/authenticate -sessionCookieHeaderName X-Qlik-Session-Latch -loadBalancingServerNodes $(Get-QlikNode).id -websocketCrossOriginWhiteList $($qlik_sense_hostname)
     # Update-QlikVirtualProxy -id $(Get-QlikVirtualProxy -filter "description eq 'google'").id -anonymousAccessMode 0
-    Add-QlikProxy -ProxyId $(Get-QlikProxy).id -VirtualProxyId $(Get-QlikVirtualProxy -filter "description eq 'latch'").id
+    Add-QlikProxy -ProxyId $(Get-QlikProxy).id -VirtualProxyId $(Get-QlikVirtualProxy -filter "description eq '$user_directory'").id
 }
 
 
