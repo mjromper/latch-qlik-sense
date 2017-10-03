@@ -86,7 +86,7 @@ app.post('/auth', function ( req, res ) {
             getUserAndCheckLATCH(username, res);
         } else {
             //Return JSON with error, user is not authenticated
-            res.json( err );
+            res.status(401).json( err );
         }
     });
 });
@@ -107,7 +107,7 @@ function getTicket( res, username, targetId, latch, operations ) {
 
 function mockCheckUserLogin(username, password, cb) {
     //This will authenticate users against usersDB.js
-    var users = require('./usersDB.js');
+    var users = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'usersDB.json'), 'utf8'));
     var found;
     for ( var i=0; i< users.length; i++){
         if ( users[i].username === username && users[i].password === password ) {

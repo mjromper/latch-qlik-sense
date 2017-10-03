@@ -45,8 +45,8 @@ angular.module('sessApp').controller('LoginCtrl', ['$scope', 'AuthService', '$wi
 			} else {
 				$state.go('dashboard');
 			}
-		}, function(){
-			console.log();
+		}, function(err){
+			$scope.errorMessage = err.data.error;
 		});
 	};
 }]);

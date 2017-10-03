@@ -1,5 +1,4 @@
-// This is your users database
-exports.users = [
+[
 	{
 		"id": 1,
 		"username": "testuser1",
@@ -10,4 +9,4 @@ exports.users = [
 		"username": "testuser2",
 		"password": "letmein"
 	}
-];
+]
