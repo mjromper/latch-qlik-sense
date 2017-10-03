@@ -15,6 +15,7 @@
                 <br />
                 <button style="background: #61a729; border: 1px solid #559324;" ng-click="doLogin();" class="btn btn-lg btn-primary btn-block" type="button">Login <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
                 <div cg-busy="{promise:loginProm,message:'Wait...'}"></div>
+                <p ng-if="errorMessage" style="color: red">{{errorMessage}}</p>
             </div>
         </div>
     </div>

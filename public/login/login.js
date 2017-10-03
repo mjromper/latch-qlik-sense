@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('sessApp').factory('AuthService', [ '$rootScope', '$http', '$cookies', '$window', '$state', function($rootScope, $http, $cookies, $window, $state) {
+angular.module('sessApp').factory('AuthService', [ '$rootScope', '$http', '$cookies', function($rootScope, $http, $cookies) {
 	var loginUser;
 
 	function setLoginUser(u) {
@@ -21,13 +21,7 @@ angular.module('sessApp').factory('AuthService', [ '$rootScope', '$http', '$cook
 	function login(user) {
 		return $http.post('/auth', user ).then( function(res) {
 			setLoginUser(res.data);
-			if ( loginUser.latch === true ) {
-				$window.location.href = loginUser.targetUri+"?qlikTicket="+loginUser.ticket;
-			} else {
-				$state.go('dashboard');
-			}
-		}, function(err) {
-			console.log('err', err);
+			return loginUser.latch;
 		});
 	}
 
@@ -39,9 +33,20 @@ angular.module('sessApp').factory('AuthService', [ '$rootScope', '$http', '$cook
 
 }]);
 
-angular.module('sessApp').controller('LoginCtrl', ['$scope', 'AuthService',
-	function($scope, AuthService) {
+angular.module('sessApp').controller('LoginCtrl', ['$scope', 'AuthService', '$window', '$state',
+	function($scope, AuthService, $window, $state) {
+		$scope.errorMessage = null;
+
 	$scope.doLogin = function(){
-		$scope.loginProm = AuthService.login($scope.user);
+		$scope.errorMessage = null;
+		$scope.loginProm = AuthService.login($scope.user).then(function(loginUserLatch){
+			if ( loginUserLatch === true ) {
+				$window.location.href = loginUser.targetUri+"?qlikTicket="+loginUser.ticket;
+			} else {
+				$state.go('dashboard');
+			}
+		}, function(){
+			console.log();
+		});
 	};
 }]);

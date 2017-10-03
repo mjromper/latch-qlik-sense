@@ -38,7 +38,7 @@ arg.forEach( function(a) {
 
 
 var db = {};
-db.latchacc = new Datastore( path.resolve(__dirname,'latch-links.db') );
+db.latchacc = new Datastore( path.resolve(__dirname, 'latch-links.db') );
 db.latchacc.loadDatabase();
 
 //Init latch configuration
@@ -50,6 +50,9 @@ var defaulTargetUri = (config.isSecure? 'https://' : 'http://') + config.senseHo
 app.use(bodyParser.json());
 app.use(express.static( path.resolve(__dirname, '..','public')));
 
+/*
+Redirect from Qlik Sense Virtual Proxy
+*/
 app.get('/authenticate', function ( req, res ) {
     //Store targetId and proxyRestUri in a global object
     if (url.parse(req.url, true).query.targetId != undefined) {
@@ -68,19 +71,22 @@ app.get('/login', function ( req, res ) {
 });
 
 
+/*
+Authentication endpoint
+*/
 app.post('/auth', function ( req, res ) {
 
     var username = req.body.username,
         password = req.body.password;
 
     // IMPORTANT
-    // Use real login user mechanisms, not this mock method
+    // Use real authentication mechanisms, not this mock method
     mockCheckUserLogin( username, password, function(err, response) {
         if ( !err && response.isAuth ) {
             getUserAndCheckLATCH(username, res);
         } else {
             //Return JSON with error, user is not authenticated
-            res.json( {"error": "User not authenticated" } );
+            res.json( err );
         }
     });
 });
@@ -100,8 +106,22 @@ function getTicket( res, username, targetId, latch, operations ) {
 }
 
 function mockCheckUserLogin(username, password, cb) {
-    // TODO: Perform any login check needed
-    cb(null, {"isAuth": true});
+    //This will authenticate users against usersDB.js
+    var users = require('./usersDB.js');
+    var found;
+    for ( var i=0; i< users.length; i++){
+        if ( users[i].username === username && users[i].password === password ) {
+            found = users[i];
+            break;
+        }
+    }
+    if ( found ) {
+        delete found.password;
+        cb( null, { "isAuth": true, "user": found } );
+    } else {
+        cb( { "error": "User not found. Wrong password or username." }, null );
+    }
+
 }
 
 function getUserAndCheckLATCH( username, res ) {
