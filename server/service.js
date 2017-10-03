@@ -38,7 +38,7 @@ arg.forEach( function(a) {
 
 
 var db = {};
-db.latchacc = new Datastore( path.resolve(__dirname,'comments.db') );
+db.latchacc = new Datastore( path.resolve(__dirname,'latch-links.db') );
 db.latchacc.loadDatabase();
 
 //Init latch configuration
