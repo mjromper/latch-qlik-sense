@@ -153,3 +153,5 @@ start-sleep 5
 net start QlikSenseServiceDispatcher
 Write-Host $nl"Done! 'Qlik Sense Service Dispatcher' restarted."$nl
 Write-Host $nl"Done! Latch Auth module installed."$nl
+
+Write-Host $nl"Access Qlik Sense through virtual proxy $user_directory -> http://$($qlik_sense_hostname)/$user_directory/hub"$nl
