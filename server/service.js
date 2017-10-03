@@ -73,15 +73,48 @@ app.post('/auth', function ( req, res ) {
     var username = req.body.username,
         password = req.body.password;
 
-    //TODO perform any login check neeeded previous to LATCH
+    // IMPORTANT
+    // Use real login user mechanisms, not this mock method
+    mockCheckUserLogin( username, password, function(err, response) {
+        if ( !err && response.isAuth ) {
+            getUserAndCheckLATCH(username, res);
+        } else {
+            //Return JSON with error, user is not authenticated
+            res.json( {"error": "User not authenticated" } );
+        }
+    });
+});
 
+
+
+function getTicket( res, username, targetId, latch, operations ) {
+    ticket.getNewTicket( username, targetId, operations ).then( function( response ) {
+        var resObj = JSON.parse(response),
+            ticketToken = resObj.Ticket,
+            targetUri = resObj.TargetUri? resObj.TargetUri : defaulTargetUri;
+
+        res.json( {"ticket": ticketToken, "targetUri": targetUri, "username": username,"latch": latch } );
+    }, function(err){
+        res.status(403).send(err);
+    });
+}
+
+function mockCheckUserLogin(username, password, cb) {
+    // TODO: Perform any login check needed
+    cb(null, {"isAuth": true});
+}
+
+function getUserAndCheckLATCH( username, res ) {
+    //Find if user already have a Latch pairing in database
     db['latchacc'].findOne( { "username": username } , function(err, result) {
 
         var targetId = global.qlikAuthSession? global.qlikAuthSession.targetId : null;
 
         if ( !result ) {
+            //User not paired with Latch. Get a Qlik Ticket.
             getTicket(res, username, targetId, null, []);
         } else {
+            //User with paried Latch. Checking Latch lock and operations
             latch.status(result.accountId, function( err, operations ) {
 
                 if (err && err.message === "Account not paired" ) {
@@ -90,7 +123,6 @@ app.post('/auth', function ( req, res ) {
                 }
 
                 if ( err ) {
-                    var defaultTargetUri
                     res.json( {"error": err, "username": username,"latch": null, "targetUri": defaulTargetUri } );
                     return;
                 }
@@ -108,21 +140,12 @@ app.post('/auth', function ( req, res ) {
 
         }
     } );
-
-});
-
-function getTicket( res, username, targetId, latch, operations ) {
-    ticket.getNewTicket( username, targetId, operations ).then( function( response ) {
-        var resObj = JSON.parse(response),
-            ticketToken = resObj.Ticket,
-            targetUri = resObj.TargetUri? resObj.TargetUri : defaulTargetUri;
-
-        res.json( {"ticket": ticketToken, "targetUri": targetUri, "username": username,"latch": latch } );
-    }, function(err){
-        res.status(403).send(err);
-    });
 }
 
+
+/*
+Endpoint to pair with Latch
+*/
 app.post('/latchpair', function( req, res ) {
     latch.pair(req.body.username, req.body.code, function(err, result){
         if (err) {
@@ -141,6 +164,10 @@ app.post('/latchpair', function( req, res ) {
     });
 } );
 
+
+/*
+Endpoint to uppair with Latch
+*/
 app.get('/unpair/:user', function( req, res ) {
 
     db['latchacc'].findOne( { "username": req.params.user } , function(err, result) {
