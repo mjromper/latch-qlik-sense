@@ -1,10 +1,7 @@
 latch-qlik-sense
 ===
 
-# Requirements
-* Nodejs (https://nodejs.org/en/)
-* Bower
-Install bower by typing "npm install -g bower"
+This is a NodeJS authentication module which can be used as a Demo or base code to implement a 2-Steps authentication in Qlik Sense with Latch.
 
 # Create a Latch Application at ElevenPaths website
 
@@ -21,11 +18,14 @@ Then take note of the Application Id and Secret Id.
     mkdir \TempLatch; cd \TempLatch
 ```
 
-* Enter below two command exactly as it is (including parentheses):
+* Download powershell install script. Enter command exactly as it is (including parentheses):
 
 ```powershell
     (Invoke-WebRequest "https://raw.githubusercontent.com/mjromper/latch-qlik-sense/master/setup.ps1" -OutFile setup.ps1)
+```
 
+* Execute install script:
+```powershell
     ./setup.ps1
 ```
 
