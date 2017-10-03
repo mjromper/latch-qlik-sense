@@ -45,7 +45,10 @@ Latch client Secret []: <enter your Latch **latch client_secret** value>
 This script will also setup a Virtual Proxy in Qlik Sense for this authentication. The virtual proxy is the one corresponding to the 'user directory'.
 
 When the script had finished just open Qlik Sense through the newly configured Virtual Proxy.
+
+```
 http://(Qlik Sense Hostname)/(user_directory)/hub
+```
 
 Then you'll be redirected to the authentication module
 
