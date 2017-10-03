@@ -132,14 +132,16 @@ Set-Config -file "$config\services.conf" -key "is_secure" -value $is_secure
 Set-Config -file "$config\services.conf" -key "client_id" -value $client_id
 Set-Config -file "$config\services.conf" -key "client_secret" -value $client_secret
 
-$confirm = Read-Host "Create Latch virtual proxy in Qlik Sense? [Y/n]"
-if ($confirm -ne 'n') {
-    # Adding virtual proxy
-    Write-Host "Creating Google Virtual Proxy"
-    New-QlikVirtualProxy -prefix $($user_directory) -description $($user_directory) -authUri http://$($qlik_sense_hostname):$($auth_port)/authenticate -sessionCookieHeaderName X-Qlik-Session-Latch -loadBalancingServerNodes $(Get-QlikNode).id -websocketCrossOriginWhiteList $($qlik_sense_hostname)
-    # Update-QlikVirtualProxy -id $(Get-QlikVirtualProxy -filter "description eq 'google'").id -anonymousAccessMode 0
-    Add-QlikProxy -ProxyId $(Get-QlikProxy).id -VirtualProxyId $(Get-QlikVirtualProxy -filter "description eq '$($user_directory)'").id
+# Adding/updating virtual proxy
+$VPId=$(Get-QlikVirtualProxy -filter "description eq '$user_directory'")
+if ( !$VPId) {
+    Write-Host "Creating Virtual Proxy"
+    New-QlikVirtualProxy -prefix $($user_directory) -description $($user_directory) -authUri http://$($qlik_sense_hostname):$($auth_port)/authenticate -sessionCookieHeaderName X-Qlik-Session-$($user_directory) -loadBalancingServerNodes $(Get-QlikNode).id -websocketCrossOriginWhiteList $($qlik_sense_hostname)
+}else{
+    Write-Host "Updating Virtual proxy"
+    Update-QlikVirtualProxy -id $VPId.id -description $($user_directory) -authUri http://$($qlik_sense_hostname):$($auth_port)/authenticate -sessionCookieHeaderName X-Qlik-Session-$($user_directory) -loadBalancingServerNodes $(Get-QlikNode).id -websocketCrossOriginWhiteList $($qlik_sense_hostname)
 }
+Add-QlikProxy -ProxyId $(Get-QlikProxy).id -VirtualProxyId $VPId.id
 
 
 
