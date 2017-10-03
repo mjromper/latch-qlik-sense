@@ -109,8 +109,8 @@ $user_directory=Read-Default $nl"Enter name of user directory" "latch"
 $qlik_sense_hostname=Read-Default $nl"Enter QS hostname" $qlik_sense_hostname
 $auth_port=Read-Default $nl"Enter port" "4000"
 $is_secure=Read-Default $nl"Use secure connection? [Y/n]" "n"
-$client_id=Read-Default $nl"Application ID" $client_id
-$client_secret=Read-Default $nl"Client Secret" $client_secret
+$client_id=Read-Default $nl"Latch application ID" $client_id
+$client_secret=Read-Default $nl"Latch client Secret" $client_secret
 
 function Set-Config( $file, $key, $value )
 {
