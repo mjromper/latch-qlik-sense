@@ -11,23 +11,12 @@
                 <input ng-model="user.username" name="userid" type="text" id="userid" class="form-control" placeholder="Enter username" required="" autofocus="">
                 <br />
                 <label for="pass">Password</label>
-                <input type="password" name="pass" id="pass" class="form-control" placeholder="Enter password" required="">
+                <input ng-model="user.password" type="password" name="pass" id="pass" class="form-control" placeholder="Enter password" required="">
                 <br />
-                <!--
-                <label for="directory">Directory</label>
-                <input ng-model="user.dir" type="text" readonly  name="directory" id="directory" class="form-control" placeholder="Enter group" required="">
-                <br />-->
                 <button style="background: #61a729; border: 1px solid #559324;" ng-click="doLogin();" class="btn btn-lg btn-primary btn-block" type="button">Login <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
                 <div cg-busy="{promise:loginProm,message:'Wait...'}"></div>
             </div>
         </div>
-
-        <!--<div class="col-md-6 text-right">
-            <h4>Some sample users</h3>
-            <ul class="list-group">
-                <li style="list-style: none;" ng-repeat="u in someUsers">{{u}}</li>
-            </ul>
-        </div>-->
     </div>
 
 </div>

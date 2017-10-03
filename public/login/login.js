@@ -41,11 +41,6 @@ angular.module('sessApp').factory('AuthService', [ '$rootScope', '$http', '$cook
 
 angular.module('sessApp').controller('LoginCtrl', ['$scope', 'AuthService',
 	function($scope, AuthService) {
-	$scope.user = {
-		dir: 'LATCH'
-	};
-	$scope.someUsers = ['alberto', 'manuel', 'felipe', 'rodrigo', 'juanma', 'asier', 'felix', 'robert'];
-
 	$scope.doLogin = function(){
 		$scope.loginProm = AuthService.login($scope.user);
 	};

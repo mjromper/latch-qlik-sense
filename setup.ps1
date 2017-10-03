@@ -88,7 +88,7 @@ Enabled=true
 DisplayName=Latch Auth
 ExecType=nodejs
 ExePath=Node\node.exe
-Script=Node\latch-auth\service.js
+Script=Node\latch-auth\server\service.js
 
 [latch-auth.parameters]
 user_directory=
