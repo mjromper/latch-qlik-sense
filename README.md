@@ -7,7 +7,7 @@ This is a NodeJS authentication module which can be used as a Demo or base code 
 
 https://latch.elevenpaths.com/www/index.html
 
-Then take note of the Application Id and Secret Id.
+Create an account and then access 'Mis Aplicaciones'. Create a Latch application and then take note of the Application Id and Secret Id for later.
 
 # Installation of this module for Qlik Sense Server (ServiceDispatcher)
 
