@@ -47,9 +47,17 @@ This script will also setup a Virtual Proxy in Qlik Sense for this authenticatio
 When the script had finished just open Qlik Sense through the newly configured Virtual Proxy.
 http://(Qlik Sense Hostname)/(user_directory)/hub
 
+Then you'll be redirected to the authentication module
+
+![](https://github.com/mjromper/latch-qlik-sense/raw/master/loginpage.png)
+
+To test just enter this credentials
+User name: ***testuser1***
+Password: ***letmein***
+
 # Important Note
 Qlik Sense does not perform any type of authentication (user's identity validation), this is always handled by a third system acting as an identity provider. Hence, for the purpose of this sample code, authentication is done against a JSON file located in ***server/usersDB.json***. The developer should change the code of this module to perform any other authentication mechinsm.
 
-If you are happy with the authentication in place then just add users to thes file ***usersDB.json***
+If you are happy with the authentication in place and wish to add new users then just modify the file (***C:\Program Files\Qlik\Sense\ServiceDispatcher\Node\Latch-Auth\server\usersDB.json***) once you had installed this module.
 
 
