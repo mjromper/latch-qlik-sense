@@ -9,7 +9,7 @@ https://latch.elevenpaths.com/www/index.html
 
 Then take note of the Application Id and Secret Id.
 
-# Installation of this module within Qlik Sense ServiceDispatcher
+# Installation of this module for Qlik Sense Server (ServiceDispatcher)
 
 * Launch PowerShell in Administrator mode (right-click and select Run As Administrator)
 * Create and change directory to an empty directory, i.e. C:\TempLatch
