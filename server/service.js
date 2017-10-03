@@ -48,7 +48,7 @@ ticket.init(config);
 var defaulTargetUri = (config.isSecure? 'https://' : 'http://') + config.senseHost +"/"+config.prefix+"/hub";
 
 app.use(bodyParser.json());
-app.use(express.static( path.resolve(__dirname, './public')));
+app.use(express.static( path.resolve(__dirname, '..','public')));
 
 app.get('/authenticate', function ( req, res ) {
     //Store targetId and proxyRestUri in a global object
