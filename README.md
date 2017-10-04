@@ -1,7 +1,7 @@
 latch-qlik-sense
 ===
 
-This is a NodeJS authentication module which can be used as a Demo or base code to implement a 2-Steps authentication in Qlik Sense with Latch.
+This is a NodeJS authentication module which can be used as a Demo or base code to implement a 2-Steps verification for Qlik Sense with Latch.
 
 This authentication module is based on the Ticketing authentication mechanism for Qlik Sense.
 
