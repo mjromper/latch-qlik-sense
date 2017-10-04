@@ -3,7 +3,7 @@
 <div ng-if="user.latch === null">
     <div ng-if="!paired">
         <div >
-            <h3>Your account to authenticate in Qlik Sense is not protected</h3>
+            <h3>Would you like to configure 2-steps verification with Latch?</h3>
             <h4>Use <img src="img/1.png" width="35px"> to secure your access while you are away.</h4>
             <p><br>Download Latch app from Apple Store or Google Play and follow instructions</p>
 
@@ -17,7 +17,7 @@
 
         </div>
         <hr style="border-top: 1px solid #00b9be;" />
-        <h3>I don't want to protect my account <a ng-href="{{user.targetUri}}?qlikTicket={{user.ticket}}"  ng-click="pair();" class="btn btn-default">Continue to Qlik Sense</a></h3>
+        <h3>I'm not interested <a ng-href="{{user.targetUri}}?qlikTicket={{user.ticket}}"  ng-click="pair();" class="btn btn-default">Continue to Qlik Sense</a></h3>
     </div>
     <div ng-if="paired">
         <h3>Nice! Your are now protected with Latch.</h3>
