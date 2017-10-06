@@ -13,6 +13,8 @@ Create an account and then access 'Mis Aplicaciones'. Create a Latch application
 
 # Installation of this module for Qlik Sense Server (ServiceDispatcher)
 
+On the server where Qlik Sense Server is installed:
+
 * Launch PowerShell in Administrator mode (right-click and select Run As Administrator)
 * Create and change directory to an empty directory, i.e. C:\TempLatch
 
