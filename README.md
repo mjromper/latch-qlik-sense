@@ -11,7 +11,10 @@ https://latch.elevenpaths.com/www/index.html
 
 Create an account and then access 'Mis Aplicaciones'. Create a Latch application and then take note of the Application Id and Secret Id for later.
 
-# Installation of this module for Qlik Sense Server (ServiceDispatcher)
+# Installation for Qlik Sense Server (within ServiceDispatcher)
+
+- Powershell v5+ needed
+- Execution Policy configuration: Set-ExecutionPolicy Bypass -Scope Process
 
 On the server where Qlik Sense Server is installed:
 
