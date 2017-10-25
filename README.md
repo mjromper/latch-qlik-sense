@@ -38,21 +38,21 @@ This will download and execute the setup script.
 When the downloading and installation of the modules including their dependencies are finished you will be prompted for some configuration options. Some of them have predefault values that will be taken if you just press enter.
 
 ```
-Enter name of user directory [latch]: 
+Enter name of user directory [latch]:
 <enter a single word, default is 'latch'>
 
-Enter QS hostname []: 
+Enter QS hostname []:
 <enter your Qlik Sense hostname, just the hostname not the entire URL>
 
-Enter port [4000]: 
+Enter port [4000]:
 <port this authentication module runs on, default 4000>
 
-Use secure connection? [Y/n] [n]: 
+Use secure connection? [Y/n] [n]:
 
-Latch application ID []: 
+Latch application ID []:
 <enter your Latch **latch app Id** value>
 
-Latch client Secret []: 
+Latch client Secret []:
 <enter your Latch **latch client_secret** value>
 ```
 
@@ -66,13 +66,13 @@ http://(Qlik Sense Hostname)/(user_directory)/hub
 
 Then you'll be redirected to the authentication module
 
-![](https://github.com/mjromper/latch-qlik-sense/raw/master/loginpage.png)
+![](https://github.com/mjromper/latch-qlik-sense/raw/master/docs/loginpage.png)
 
 To test just enter this credentials
 User name: ***testuser1***
 Password: ***letmein***
 
-![](https://github.com/mjromper/latch-qlik-sense/raw/master/2stepslatch.png)
+![](https://github.com/mjromper/latch-qlik-sense/raw/master/docs/2stepslatch.png)
 
 # Important Note
 Qlik Sense does not perform any type of authentication (user's identity validation), this is always handled by a third system acting as an identity provider. Hence, for the purpose of this sample code, authentication is done against a JSON file located in ***server/usersDB.json***. The developer should change the code of this module to perform any other authentication mechinsm.
