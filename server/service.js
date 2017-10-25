@@ -91,6 +91,12 @@ app.post('/auth', function ( req, res ) {
     });
 });
 
+/*
+Authentication endpoint
+*/
+app.post('/retry', function ( req, res ) {
+    getUserAndCheckLATCH(req.body.username, res);
+});
 
 
 function getTicket( res, username, targetId, latch, operations ) {
@@ -148,6 +154,7 @@ function getUserAndCheckLATCH( username, res ) {
                 }
 
                 var isAllOn = true;
+                console.log("operations", operations);
                 for (var op in operations) {
                     isAllOn = isAllOn && (operations[op].status === 'on');
                 }

@@ -16,11 +16,11 @@ angular.module('sessApp').controller('DashboardCtrl', ['$scope', '$rootScope', '
      		console.log("err pairing", err);
      	});
 	};
-	
+
 	$scope.retry = function() {
-		AuthService.login($scope.user);
+		AuthService.retry($scope.user);
 	};
-	
+
 	$scope.unpair = function() {
 		LatchUnpairResource.unpair({user: $scope.user.username}, function (res) {
           	$rootScope.logout();
