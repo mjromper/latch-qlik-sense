@@ -154,7 +154,6 @@ function getUserAndCheckLATCH( username, res ) {
                 }
 
                 var isAllOn = true;
-                console.log("operations", operations);
                 for (var op in operations) {
                     isAllOn = isAllOn && (operations[op].status === 'on');
                 }
